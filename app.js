@@ -2,6 +2,9 @@ const colorDivs = document.querySelectorAll(".color");
 const generateBtn = document.querySelector(".generate");
 const sliders = document.querySelectorAll(`input[type="range"]`);
 const currentHexes = document.querySelectorAll(".color h2");
+const popup = document.querySelector(".copy-container");
+
+
 let initialColors;
 
 sliders.forEach(slider => {
@@ -13,12 +16,18 @@ colorDivs.forEach((div, index)=>{
         updateTextUI(index);
     });
 });
+currentHexes.forEach(hex => {
+    hex.addEventListener("click", () => {
+        copyToClipboard(hex);
+    })
+});
+;
 
 function generateHex() {
     const hexColor = chroma.random();
     return hexColor;
 };
-let randomHex = generateHex();
+//let randomHex = generateHex();
 
 
 function randomColors() {
@@ -83,6 +92,7 @@ function hslControls(e){
     .set("hsl.h", hue.value);
 
     colorDivs[index].style.backgroundColor = color;
+    colorizeSliders(color, hue, brightness, saturation);
 }
 function updateTextUI(index){
     const activeDiv = colorDivs[index];
@@ -117,4 +127,25 @@ function resetInputs() {
         }
     })
 }
-randomColors();
+function copyToClipboard(hex){
+    const el = document.createElement("textarea");
+    el.value = hex.innerText;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+
+    const popupBox = popup.children[0];
+    popup.classList.add("active");
+    popupBox.classList.add("active");
+    setTimeout(() => {
+        popup.classList.remove("active");
+        popupBox.classList.remove("active");
+      }, 1000);
+}; 
+
+
+
+
+
+randomColors(); 
